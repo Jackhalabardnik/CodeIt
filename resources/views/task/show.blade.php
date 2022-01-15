@@ -9,10 +9,10 @@
         </div>
         <div>
             <p>
-                Start: {{$task->startDate}}
+                Start: {{$task->start_date}}
             </p>
             <p>
-                End: {{$task->endDate}}
+                End: {{$task->end_date}}
             </p>
         </div>
 

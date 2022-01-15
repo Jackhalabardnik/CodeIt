@@ -19,8 +19,9 @@ class CreateTasksTable extends Migration
             $table->string('title');
             $table->text('description');
             $table->string('solution');
-            $table->dateTime('startDate');
-            $table->dateTime('endDate');
+            $table->dateTime('start_date');
+            $table->dateTime('end_date');
+            $table->boolean('is_premium');
             $table->timestamps();
 
             $table->index('submission_id');
