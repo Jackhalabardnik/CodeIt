@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -44,7 +45,7 @@ class RegisterController extends Controller
     /**
      * Get a validator for an incoming registration request.
      *
-     * @param  array  $data
+     * @param array $data
      * @return \Illuminate\Contracts\Validation\Validator
      */
     protected function validator(array $data)
@@ -52,6 +53,7 @@ class RegisterController extends Controller
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'birth_date' => ['required', 'date_format:Y-m-d', 'before:' . Carbon::now()->subYears(18)->format('Y-m-d')],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
     }
@@ -59,15 +61,26 @@ class RegisterController extends Controller
     /**
      * Create a new user instance after a valid registration.
      *
-     * @param  array  $data
+     * @param array $data
      * @return \App\Models\User
      */
     protected function create(array $data)
     {
+        $invite_codes = User::all()->pluck('invite_code')->toArray();
+
+        $invite_code = uniqid();
+
+        while(in_array($invite_code, $invite_codes)) {
+            $invite_code = uniqid();
+        }
+
         return User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
+            'birth_date' => $data['birth_date'],
+            'invite_code' => $invite_code,
+            'invited_people' => 0
         ]);
     }
 }

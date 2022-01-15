@@ -20,8 +20,7 @@ class CreateUsersTable extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->date('birth_date');
-            $table->string('inviteCode');
-            $table->boolean('next_month_sub');
+            $table->string('invite_code');
             $table->integer('invited_people');
             $table->string('password');
             $table->rememberToken();
