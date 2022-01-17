@@ -46,13 +46,14 @@ class TaskController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\Task  $task
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\Response
      */
-    public function show($task_id)
+    public function show(Task $task)
     {
-        $task = Task::query()->findOrFail($task_id);
+        $user = auth()->user();
         return view('task.show', [
-            "task" => $task
+            "task" => $task,
+            "user" => $user
         ]);
     }
 

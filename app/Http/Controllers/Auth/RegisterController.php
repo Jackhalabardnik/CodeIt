@@ -55,6 +55,7 @@ class RegisterController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'birth_date' => ['required', 'date_format:Y-m-d', 'before:' . Carbon::now()->subYears(18)->format('Y-m-d')],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'invite_code' => ['nullable', 'exists:Users']
         ]);
     }
 
@@ -74,13 +75,21 @@ class RegisterController extends Controller
             $invite_code = uniqid();
         }
 
+        if($data['invite_code'])
+        {
+            $invitator = User::where('invite_code', $data['invite_code'])->first();
+            $invitator->invited_people = $invitator->invited_people + 1;
+            $invitator->save();
+        }
+
         return User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
             'birth_date' => $data['birth_date'],
             'invite_code' => $invite_code,
-            'invited_people' => 0
+            'invited_people' => 0,
+            'is_admin' => false,
         ]);
     }
 }

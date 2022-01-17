@@ -75,6 +75,20 @@
                             </div>
                         </div>
 
+                        <div class="row mb-3">
+                            <label for="invite_code" class="col-md-4 col-form-label text-md-end">Invite code</label>
+
+                            <div class="col-md-6">
+                                <input id="invite_code" type="text" class="form-control @error('invite_code') is-invalid @enderror" name="invite_code">
+
+                                @error('invite_code')
+                                <span class="invalid-feedback" role="alert">
+                                        <strong>Invalid invite code</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+
                         <div class="row mb-0">
                             <div class="col-md-6 offset-md-4">
                                 <button type="submit" class="btn btn-primary">

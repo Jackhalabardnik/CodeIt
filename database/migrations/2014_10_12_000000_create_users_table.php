@@ -22,6 +22,7 @@ class CreateUsersTable extends Migration
             $table->date('birth_date');
             $table->string('invite_code');
             $table->integer('invited_people');
+            $table->boolean('is_admin');
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
