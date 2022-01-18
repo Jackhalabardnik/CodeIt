@@ -5,6 +5,11 @@
         <div> Your name is: <strong>{{$user->name}}</strong> </div>
         <div> Your email is: <strong>{{$user->email}}</strong> </div>
         <div> Your were born: <strong>{{$user->birth_date}}</strong> </div>
+        @if($user->is_admin)
+            <div>
+                You are the admin, add some fun tasks!
+            </div>
+        @else
         <div>
             Your invite code: <strong>{{$user->invite_code}}</strong>
             <p>
@@ -15,6 +20,7 @@
                 @endif
             </p>
         </div>
+        @endcan
         <div class="d-flex align-items-center">
             <div class="bg-light border border-1 border-dark rounded-2">
                 <a class="nav-link text-dark" href="{{ route('user.edit', ['user' => $user->id]) }}">

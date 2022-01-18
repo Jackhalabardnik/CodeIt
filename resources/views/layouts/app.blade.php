@@ -27,7 +27,7 @@
     <nav class="navbar navbar-expand-md navbar-dark bg-dark shadow-sm">
         <div class="container">
             <a class="navbar-brand" href="{{ url('/') }}">
-                {{ config('app.name', 'Laravel') }}
+                Code It
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
@@ -67,12 +67,6 @@
                                 <a class="dropdown-item" href="{{route('user.show', ['user' => Auth::user()->id])}}">
                                     Home
                                 </a>
-
-                                @if(Auth::user()->is_admin)
-                                    <a class="dropdown-item" href="{{route('task.create')}}">
-                                        Create new task
-                                    </a>
-                                @endif
 
                                 <a class="dropdown-item" href="{{ route('logout') }}"
                                    onclick="event.preventDefault();

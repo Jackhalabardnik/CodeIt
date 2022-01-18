@@ -26,7 +26,7 @@ Route::get('/user/{user}/home', [App\Http\Controllers\UserController::class, 'sh
 
 Route::get('/user/{user}/edit', [App\Http\Controllers\UserController::class, 'edit'])->name('user.edit');
 
-Route::post('/user/{user}/delete/perm', [App\Http\Controllers\UserController::class, 'remove'])->name('user.remove');
+Route::post('/user/{user}/delete/perm', [App\Http\Controllers\UserController::class, 'destroy'])->name('user.remove');
 
 Route::get('/user/{user}/delete', [App\Http\Controllers\UserController::class, 'delete'])->name('user.delete');
 
