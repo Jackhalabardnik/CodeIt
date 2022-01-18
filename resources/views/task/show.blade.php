@@ -37,7 +37,7 @@
                 </div>
             </div>
         @else
-            @if(Auth::user->is_admin)
+            @if(Auth::user()->is_admin == false)
                 <form method="POST" action="{{ route('register') }}">
                     @csrf
                     <div class="d-flex col-3">
@@ -60,7 +60,7 @@
                     </div>
                 </form>
             @else
-                <div>
+                <div class="fs-3">
                     Admin cannot submit solution, remember it.
                 </div>
             @endif

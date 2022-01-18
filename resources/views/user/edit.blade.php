@@ -6,7 +6,7 @@
             @csrf
 
             <div>
-                <div class="col-3">
+                <div class="col-lg-3 col-md-6 col-sm-12">
                     <label for="name" class="col-form-label">New name</label>
                     <div class="pb-3">
                         <input id="name" type="text" value="{{$user->name}}" class="form-control @error('name') is-invalid @enderror"
@@ -20,7 +20,7 @@
                     @enderror
                 </div>
 
-                <div class="col-3">
+                <div class="col-lg-3 col-md-6 col-sm-12">
                     <label for="email" class="col-form-label">New email</label>
                     <div class="pb-3">
                         <input id="email" type="email" value="{{$user->email}}" class="form-control @error('email') is-invalid @enderror"
@@ -34,7 +34,7 @@
                     @enderror
                 </div>
 
-                <div class="col-3">
+                <div class="col-lg-3 col-md-6 col-sm-12">
                     <label for="birth_date" class="col-form-label">New birthdate (just in case)</label>
                     <div class="pb-3">
                         <input id="birth_date" type="date" value="{{$user->birth_date}}" class="form-control @error('birth_date') is-invalid @enderror"
@@ -55,6 +55,5 @@
                 </div>
             </div>
         </form>
-    </div>
     </div>
 @endsection

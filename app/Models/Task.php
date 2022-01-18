@@ -9,6 +9,15 @@ class Task extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'title',
+        'description',
+        'start_date',
+        'end_date',
+        'solution',
+        'is_premium',
+    ];
+
     public function submissions() {
         return $this->hasMany(Submission::class);
     }
