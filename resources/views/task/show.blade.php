@@ -56,7 +56,7 @@
                     </div>
                 @else
                     @if($task->is_premium == false || $user->invided_people >= 3 )
-                        <form method="POST" action="{{ route('register') }}">
+                        <form method="POST" action="{{ route('submission.store', ['task' => $task]) }}">
                             @csrf
                             <div class="d-flex col-3 fs-4 pt-4 align-items-center">
                                 <label for="solution" class="col-form-label">Solution:</label>
@@ -88,6 +88,32 @@
 
                     @endif
                 @endif
+
+                @if($has_submissions)
+                    <div class="pt-3 fs-3 text-center">
+                        <strong>Your submissions</strong>
+                    </div>
+
+                    @foreach ($submissions as $submission)
+                        <div class="py-2">
+                            <div
+                                class="border border-2 border-dark rounded-3 fs-3 justify-content-between d-lg-flex d-md-flex
+                                @if($submission->solution == $task->solution)
+                                    bg-success bg-opacity-25
+                                @endif
+                                    ">
+                                <div class="ps-2">
+                                    Your answer: {{$submission->solution}}
+                                </div>
+                                <div class="pe-2">
+                                    Time: {{\Carbon\Carbon::parse($submission->date)}}
+                                </div>
+                            </div>
+                        </div>
+
+                    @endforeach
+                @endif
+
             @else
                 <div class="fs-3">
                     Admin cannot submit solution, remember it.
@@ -97,4 +123,10 @@
         @endguest
 
     </div>
+
+
+
+    <script>
+
+    </script>
 @endsection

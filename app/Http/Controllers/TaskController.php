@@ -78,10 +78,13 @@ class TaskController extends Controller
     {
         $user = auth()->user();
         $time_now = Carbon::now();
+        $submissions = $task->submissions()->get();
         return view('task.show', [
             "task" => $task,
             "user" => $user,
-            "time_now" => $time_now
+            "time_now" => $time_now,
+            "submissions" => $submissions,
+            "has_submissions" => $submissions->isEmpty() == false,
         ]);
     }
 

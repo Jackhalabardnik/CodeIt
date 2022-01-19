@@ -41,7 +41,7 @@ class SubmissionPolicy
      */
     public function create(User $user)
     {
-        //
+        return $user->is_admin == false;
     }
 
     /**
@@ -53,7 +53,7 @@ class SubmissionPolicy
      */
     public function update(User $user, Submission $submission)
     {
-        //
+        return $user->is_admin;
     }
 
     /**
@@ -65,7 +65,7 @@ class SubmissionPolicy
      */
     public function delete(User $user, Submission $submission)
     {
-        //
+        return $user->is_admin;
     }
 
     /**
@@ -77,7 +77,7 @@ class SubmissionPolicy
      */
     public function restore(User $user, Submission $submission)
     {
-        //
+        return $user->is_admin;
     }
 
     /**
@@ -89,6 +89,6 @@ class SubmissionPolicy
      */
     public function forceDelete(User $user, Submission $submission)
     {
-        //
+        return $user->is_admin;
     }
 }

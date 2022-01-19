@@ -33,6 +33,8 @@ Route::post('/task/{task}/delete/perm', [App\Http\Controllers\TaskController::cl
 
 Route::get('/task/{task}/delete', [App\Http\Controllers\TaskController::class, 'delete'])->name('task.delete');
 
+Route::post('/submission/{task}/store', [App\Http\Controllers\SubmissionController::class, 'store'])->name('submission.store');
+
 Route::get('/user/{user}/home', [App\Http\Controllers\UserController::class, 'show'])->name('user.show');
 
 Route::get('/user/{user}/edit', [App\Http\Controllers\UserController::class, 'edit'])->name('user.edit');

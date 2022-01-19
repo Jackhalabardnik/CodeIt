@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreSubmissionRequest;
 use App\Http\Requests\UpdateSubmissionRequest;
 use App\Models\Submission;
+use App\Models\Task;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class SubmissionController extends Controller
 {
@@ -32,11 +35,22 @@ class SubmissionController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \App\Http\Requests\StoreSubmissionRequest  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Http\Response|\Illuminate\Routing\Redirector
      */
-    public function store(StoreSubmissionRequest $request)
+    public function store(StoreSubmissionRequest $request, Task $task)
     {
-        //
+        $data = request()->validate([
+            'solution' => ['required', 'string', 'max:255'],
+        ]);
+
+        Submission::create([
+            'user_id' => Auth::user()->id,
+            'task_id' => $task->id,
+            'date' => Carbon::now(),
+            'solution' => $data['solution'],
+        ]);
+
+        return redirect(route('task.show', ['task' => $task]));
     }
 
     /**

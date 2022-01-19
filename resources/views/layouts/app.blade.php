@@ -18,9 +18,6 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-
-    <!-- Paddle -->
-    @paddleJS
 </head>
 <body>
 <div id="app">

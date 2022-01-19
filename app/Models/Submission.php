@@ -9,6 +9,13 @@ class Submission extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'user_id',
+        'task_id',
+        'date',
+        'solution',
+    ];
+
     public function task() {
         return $this->hasOne(Task::class);
     }

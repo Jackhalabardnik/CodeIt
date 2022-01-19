@@ -19,6 +19,6 @@ class Task extends Model
     ];
 
     public function submissions() {
-        return $this->hasMany(Submission::class);
+        return $this->hasMany(Submission::class)->orderBy('date', 'desc');
     }
 }
