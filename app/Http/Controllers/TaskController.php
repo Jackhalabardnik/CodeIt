@@ -18,8 +18,10 @@ class TaskController extends Controller
     public function index()
     {
         $tasks = Task::all();
+        $time_now = Carbon::now();
         return view('task.index', [
-            "tasks" => $tasks
+            'tasks' => $tasks,
+            'time_now' => $time_now
         ]);
     }
 
@@ -75,9 +77,11 @@ class TaskController extends Controller
     public function show(Task $task)
     {
         $user = auth()->user();
+        $time_now = Carbon::now();
         return view('task.show', [
             "task" => $task,
-            "user" => $user
+            "user" => $user,
+            "time_now" => $time_now
         ]);
     }
 

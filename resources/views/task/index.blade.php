@@ -28,14 +28,34 @@
             @forelse ($tasks as $task)
                 <div class="py-2">
                     <div
-                        class="border border-2 border-dark rounded-3 fs-3 d-flex justify-content-between">
-                        <a class="nav-link text-dark" href="{{ route('task.show', ['task'=> $task->id]) }}">
-                            <strong>{{ $task->title }}</strong>
-                            @if($task->is_premium)
-                                *premium
-                            @endif
+                        class="border border-2 border-dark rounded-3 fs-3 justify-content-between d-lg-flex d-md-flex">
+                        <div>
+                            <div class="row">
+                                <a class="nav-link text-dark d-flex"
+                                   href="{{ route('task.show', ['task'=> $task->id]) }}">
+                                    <strong>{{ $task->title }}</strong>
+                                    @if($task->is_premium)
+                                        <div class="ps-2">
+                                            *premium
+                                        </div>
+                                    @endif
+                                </a>
+                            </div>
+                            <div class="row ps-2">
+                                <div class="ps-2">
+                                    @if($time_now->diffInSeconds($task->start_date, false) > 0)
+                                        Task will open at {{\Carbon\Carbon::parse($task->start_date)}}
+                                    @elseif($time_now->diffInSeconds($task->end_date, false) < 0)
+                                        Task closed at {{\Carbon\Carbon::parse($task->end_date)}}
+                                    @else
+                                        Task is open till {{\Carbon\Carbon::parse($task->end_date)}}, quick, submit your
+                                        solution!
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
 
-                        </a>
+
                         @can('delete', $task)
                             <div class="d-flex p-2">
                                 <div class="pe-2">

@@ -7,16 +7,20 @@
                 {{$task->title}}
             </h1>
         </div>
-        <div>
+        <div class="fs-4">
             <p>
-                Start: {{$task->start_date}}
+                <strong>Start:</strong> {{\Carbon\Carbon::parse($task->start_date)}}
             </p>
             <p>
-                End: {{$task->end_date}}
+                <strong>End:</strong> {{\Carbon\Carbon::parse($task->end_date)}}
             </p>
         </div>
 
-        {{$task->description}}
+        <div class="fs-4">
+            <strong>Description:</strong>
+            <br>
+            {{$task->description}}
+        </div>
 
         @guest
             <div class="d-flex align-items-center">
@@ -37,28 +41,53 @@
                 </div>
             </div>
         @else
-            @if(Auth::user()->is_admin == false)
-                <form method="POST" action="{{ route('register') }}">
-                    @csrf
-                    <div class="d-flex col-3">
-                        <label for="solution" class="col-form-label">Solution</label>
-                        <div class="px-3">
-                            <input id="solution" type="text" class="form-control @error('solution') is-invalid @enderror"
-                                   name="solution" required autocomplete="name" autofocus>
-                        </div>
-
-                        @error('solution')
-                        <span class="invalid-feedback" role="alert">
-                        <strong>{{ $message }}</strong>
-                    </span>
-                        @enderror
-                        <div>
-                            <button type="submit" class="btn btn-primary">
-                                Submit
-                            </button>
+            @if($user->is_admin == false)
+                @if($time_now->diffInSeconds($task->start_date, false) > 0)
+                    <div class="pt-3">
+                        <div class="fs-4 border border-success border-3 text-center rounded-2">
+                            Task will open at {{\Carbon\Carbon::parse($task->start_date)}}
                         </div>
                     </div>
-                </form>
+                @elseif($time_now->diffInSeconds($task->end_date, false) < 0)
+                    <div class="pt-3">
+                        <div class="fs-4 border border-danger border-3 text-center rounded-2">
+                            Task closed at {{\Carbon\Carbon::parse($task->end_date)}}
+                        </div>
+                    </div>
+                @else
+                    @if($task->is_premium == false || $user->invided_people >= 3 )
+                        <form method="POST" action="{{ route('register') }}">
+                            @csrf
+                            <div class="d-flex col-3 fs-4 pt-4 align-items-center">
+                                <label for="solution" class="col-form-label">Solution:</label>
+                                <div class="px-3">
+                                    <input id="solution" type="text"
+                                           class="form-control @error('solution') is-invalid @enderror"
+                                           name="solution" required autocomplete="name" autofocus>
+                                </div>
+
+                                @error('solution')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                                @enderror
+                                <div>
+                                    <button type="submit" class="btn btn-primary">
+                                        Submit
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    @else
+                        <div class="pt-3">
+                            <div class="fs-4 border border-danger border-3 text-center rounded-2">
+                                You have to invite {{3 - $user->invited_people}} more people to have access to
+                                submitting to premium tasks.
+                            </div>
+                        </div>
+
+                    @endif
+                @endif
             @else
                 <div class="fs-3">
                     Admin cannot submit solution, remember it.
