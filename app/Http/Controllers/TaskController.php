@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreTaskRequest;
 use App\Http\Requests\UpdateTaskRequest;
 use App\Models\Task;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Validation\Rule;
 
@@ -17,12 +18,27 @@ class TaskController extends Controller
      */
     public function index()
     {
-        $tasks = Task::all();
+        $tasks = Task::all()->sortBy(function (Task $a, $b) {
+            return $this->get_time_open($a) - $b;
+        });
         $time_now = Carbon::now();
         return view('task.index', [
             'tasks' => $tasks,
             'time_now' => $time_now
         ]);
+    }
+
+    private function get_time_open(Task $task) {
+        $time_now = Carbon::now();
+        if($time_now->diffInSeconds($task->start_date, false) > 0) {
+            return 1;
+        }
+        else if($time_now->diffInSeconds($task->end_date, false) < 0) {
+            return 2;
+        }
+        else {
+            return 0;
+        }
     }
 
     /**
@@ -78,7 +94,18 @@ class TaskController extends Controller
     {
         $user = auth()->user();
         $time_now = Carbon::now();
-        $submissions = $task->submissions()->get();
+
+        $submissions = $task->submissions()->take(10)->get();
+        if($user) {
+            if($user->is_admin) {
+                $submissions = $task->submissions()->get();
+            }
+            else
+            {
+                $submissions = $task->submissions()->where('user_id', '=', $user->id)->get();
+            }
+        }
+
         return view('task.show', [
             "task" => $task,
             "user" => $user,

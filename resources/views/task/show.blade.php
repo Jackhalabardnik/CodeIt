@@ -22,39 +22,41 @@
             {{$task->description}}
         </div>
 
-        @guest
-            <div class="d-flex align-items-center">
-                <div class="text-dark align-content-center pe-2">
-                    To submit your solution
-                </div>
-
-                <div class="bg-light border border-1 border-dark rounded-2">
-                    <a class="nav-link text-dark" href="{{ route('login') }}">Log in</a>
-                </div>
-
-                <div class="text-dark align-content-center px-2">
-                    Or
-                </div>
-
-                <div class="bg-dark border border-1 border-dark rounded-2">
-                    <a class="nav-link text-white" href="{{ route('register') }}">Register</a>
+        @if($time_now->diffInSeconds($task->start_date, false) > 0)
+            <div class="pt-3">
+                <div class="fs-4 border border-success border-3 text-center rounded-2">
+                    Task will open at {{\Carbon\Carbon::parse($task->start_date)}}
                 </div>
             </div>
+        @elseif($time_now->diffInSeconds($task->end_date, false) < 0)
+            <div class="pt-3">
+                <div class="fs-4 border border-danger border-3 text-center rounded-2">
+                    Task closed at {{\Carbon\Carbon::parse($task->end_date)}}
+                </div>
+            </div>
+
         @else
-            @if($user->is_admin == false)
-                @if($time_now->diffInSeconds($task->start_date, false) > 0)
-                    <div class="pt-3">
-                        <div class="fs-4 border border-success border-3 text-center rounded-2">
-                            Task will open at {{\Carbon\Carbon::parse($task->start_date)}}
-                        </div>
+
+            @guest
+                <div class="d-flex align-items-center">
+                    <div class="text-dark align-content-center pe-2">
+                        To submit your solution
                     </div>
-                @elseif($time_now->diffInSeconds($task->end_date, false) < 0)
-                    <div class="pt-3">
-                        <div class="fs-4 border border-danger border-3 text-center rounded-2">
-                            Task closed at {{\Carbon\Carbon::parse($task->end_date)}}
-                        </div>
+
+                    <div class="bg-light border border-1 border-dark rounded-2">
+                        <a class="nav-link text-dark" href="{{ route('login') }}">Log in</a>
                     </div>
-                @else
+
+                    <div class="text-dark align-content-center px-2">
+                        Or
+                    </div>
+
+                    <div class="bg-dark border border-1 border-dark rounded-2">
+                        <a class="nav-link text-white" href="{{ route('register') }}">Register</a>
+                    </div>
+                </div>
+            @else
+                @if($user->is_admin == false)
                     @if($task->is_premium == false || $user->invided_people >= 3 )
                         <form method="POST" action="{{ route('submission.store', ['task' => $task]) }}">
                             @csrf
@@ -87,40 +89,58 @@
                         </div>
 
                     @endif
-                @endif
-
-                @if($has_submissions)
-                    <div class="pt-3 fs-3 text-center">
-                        <strong>Your submissions</strong>
+                @else
+                    <div class="fs-3">
+                        Admin cannot submit solution, remember it.
                     </div>
-
-                    @foreach ($submissions as $submission)
-                        <div class="py-2">
-                            <div
-                                class="border border-2 border-dark rounded-3 fs-3 justify-content-between d-lg-flex d-md-flex
-                                @if($submission->solution == $task->solution)
-                                    bg-success bg-opacity-25
-                                @endif
-                                    ">
-                                <div class="ps-2">
-                                    Your answer: {{$submission->solution}}
-                                </div>
-                                <div class="pe-2">
-                                    Time: {{\Carbon\Carbon::parse($submission->date)}}
-                                </div>
-                            </div>
-                        </div>
-
-                    @endforeach
                 @endif
 
-            @else
-                <div class="fs-3">
-                    Admin cannot submit solution, remember it.
-                </div>
             @endif
 
-        @endguest
+
+        @endif
+
+        @if($has_submissions)
+            <div class="pt-3 fs-3 text-center">
+                <strong>@guest
+                        Submissions:
+                    @else
+                        @if($user->is_admin)
+                            Submissions:
+                        @else
+                            Your submissions:
+                        @endif
+                    @endguest</strong>
+            </div>
+
+            @foreach ($submissions as $submission)
+                <div class="py-2">
+                    <div
+                        class="border border-2 border-dark rounded-3 fs-3 justify-content-between d-lg-flex d-md-flex
+                            @if($submission->solution == $task->solution && $time_now->diffInSeconds($task->end_date, false) < 0)
+                            bg-success bg-opacity-25
+                            @endif
+                            ">
+                        <div class="ps-2">
+                            @guest
+                                Answer:
+                            @else
+                                @if($user->is_admin)
+                                    Answer:
+                                @else
+                                    Your answer:
+                                @endif
+                            @endguest
+                            {{$submission->solution}}
+                        </div>
+                        <div class="pe-2">
+                            Time: {{\Carbon\Carbon::parse($submission->date)}}
+                        </div>
+                    </div>
+                </div>
+
+            @endforeach
+        @endif
 
     </div>
 
