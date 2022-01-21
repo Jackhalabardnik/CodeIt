@@ -18,9 +18,12 @@ class TaskController extends Controller
      */
     public function index()
     {
-        $tasks = Task::all()->sortBy(function (Task $a, $b) {
-            return $this->get_time_open($a) - $b;
-        });
+        $tasks = Task::all()->sort(function (Task $a, Task $b) {
+            return $a->end_date < $b->end_date;
+        })->sort(
+            function (Task $a, Task $b) {
+                return $this->get_task_status($a) - $this->get_task_status($b);
+            });
         $time_now = Carbon::now();
         return view('task.index', [
             'tasks' => $tasks,
@@ -28,15 +31,14 @@ class TaskController extends Controller
         ]);
     }
 
-    private function get_time_open(Task $task) {
+    private function get_task_status(Task $task): int
+    {
         $time_now = Carbon::now();
-        if($time_now->diffInSeconds($task->start_date, false) > 0) {
+        if ($time_now->diffInSeconds($task->start_date, false) > 0) {
             return 1;
-        }
-        else if($time_now->diffInSeconds($task->end_date, false) < 0) {
+        } else if ($time_now->diffInSeconds($task->end_date, false) < 0) {
             return 2;
-        }
-        else {
+        } else {
             return 0;
         }
     }
@@ -56,7 +58,7 @@ class TaskController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\StoreTaskRequest  $request
+     * @param \App\Http\Requests\StoreTaskRequest $request
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Http\Response|\Illuminate\Routing\Redirector
      */
     public function store(StoreTaskRequest $request)
@@ -87,7 +89,7 @@ class TaskController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Task  $task
+     * @param \App\Models\Task $task
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\Response
      */
     public function show(Task $task)
@@ -96,12 +98,10 @@ class TaskController extends Controller
         $time_now = Carbon::now();
 
         $submissions = $task->submissions()->take(10)->get();
-        if($user) {
-            if($user->is_admin) {
+        if ($user) {
+            if ($user->is_admin) {
                 $submissions = $task->submissions()->get();
-            }
-            else
-            {
+            } else {
                 $submissions = $task->submissions()->where('user_id', '=', $user->id)->get();
             }
         }
@@ -118,7 +118,7 @@ class TaskController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Task  $task
+     * @param \App\Models\Task $task
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\Response
      */
     public function edit(Task $task)
@@ -133,8 +133,8 @@ class TaskController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\UpdateTaskRequest  $request
-     * @param  \App\Models\Task  $task
+     * @param \App\Http\Requests\UpdateTaskRequest $request
+     * @param \App\Models\Task $task
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Http\Response|\Illuminate\Routing\Redirector
      */
     public function update(UpdateTaskRequest $request, Task $task)
@@ -164,7 +164,7 @@ class TaskController extends Controller
     /**
      * Show delete view.
      *
-     * @param  \App\Models\Task  $task
+     * @param \App\Models\Task $task
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\Response
      */
     public function delete(Task $task)
@@ -179,7 +179,7 @@ class TaskController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Task  $task
+     * @param \App\Models\Task $task
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Http\Response|\Illuminate\Routing\Redirector
      */
     public function destroy(Task $task)
