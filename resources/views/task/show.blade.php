@@ -101,47 +101,63 @@
         @endif
 
         @if($has_submissions)
-            <div class="pt-3 fs-3 text-center">
-                <strong>@guest
-                        Submissions:
-                    @else
+            @guest
+                @if($time_now->diffInSeconds($task->end_date, false) < 0)
+                    <div class="pt-3 fs-3 text-center">
+                        <stron>Submissions</stron>
+                    </div>
+                    @foreach ($submissions as $submission)
+                        <div class="py-2">
+                            <div
+                                class="border border-2 border-dark rounded-3 fs-3 justify-content-between d-lg-flex d-md-flex
+                                @if($submission->solution == $task->solution)
+                                    bg-success bg-opacity-25
+                                @endif ">
+                                <div class="ps-2">
+                                    {{$submission->solution}}
+                                </div>
+                                <div class="pe-2">
+                                    Time: {{\Carbon\Carbon::parse($submission->date)}}
+                                </div>
+                            </div>
+                        </div>
+
+                    @endforeach
+                @endif
+            @else
+                <div class="pt-3 fs-3 text-center">
+                    <strong>
                         @if($user->is_admin)
                             Submissions:
                         @else
                             Your submissions:
                         @endif
-                    @endguest</strong>
-            </div>
-
-            @foreach ($submissions as $submission)
-                <div class="py-2">
-                    <div
-                        class="border border-2 border-dark rounded-3 fs-3 justify-content-between d-lg-flex d-md-flex
-                            @if($submission->solution == $task->solution && $time_now->diffInSeconds($task->end_date, false) < 0)
-                            bg-success bg-opacity-25
-                            @endif
-                            ">
-                        <div class="ps-2">
-                            @guest
-                                Answer:
-                            @else
+                    </strong>
+                </div>
+                @foreach ($submissions as $submission)
+                    <div class="py-2">
+                        <div
+                            class="border border-2 border-dark rounded-3 fs-3 justify-content-between d-lg-flex d-md-flex
+                            @if($submission->solution == $task->solution && ($time_now->diffInSeconds($task->end_date, false) < 0 || $user->is_admin))
+                                bg-success bg-opacity-25
+                            @endif ">
+                            <div class="ps-2">
                                 @if($user->is_admin)
                                     Answer:
                                 @else
                                     Your answer:
                                 @endif
-                            @endguest
-                            {{$submission->solution}}
-                        </div>
-                        <div class="pe-2">
-                            Time: {{\Carbon\Carbon::parse($submission->date)}}
+                                {{$submission->solution}}
+                            </div>
+                            <div class="pe-2">
+                                Time: {{\Carbon\Carbon::parse($submission->date)}}
+                            </div>
                         </div>
                     </div>
-                </div>
 
-            @endforeach
+                @endforeach
+            @endguest
         @endif
-
     </div>
 
 
